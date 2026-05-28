@@ -7,10 +7,12 @@ import type { TerminalQuickCommand } from '../../../../shared/types'
 import { sendTerminalQuickCommandToPane } from './terminal-quick-command-dispatch'
 import { splitWebRuntimeTerminal } from '@/runtime/web-runtime-session'
 import { pasteTerminalText } from './terminal-bracketed-paste'
+import { makePaneKey } from '../../../../shared/stable-pane-id'
 
 const CLOSE_ALL_CONTEXT_MENUS_EVENT = 'orca-close-all-context-menus'
 
 type UseTerminalPaneContextMenuDeps = {
+  tabId: string
   managerRef: React.RefObject<PaneManager | null>
   paneTransportsRef: React.RefObject<Map<number, PtyTransport>>
   paneCwdRef: React.RefObject<PaneCwdMap>
@@ -32,6 +34,7 @@ type TerminalMenuState = {
   menuPaneId: number | null
   onContextMenuCapture: (event: React.MouseEvent<HTMLDivElement>) => void
   onCopy: () => Promise<void>
+  onCopyPaneId: () => Promise<void>
   onPaste: () => Promise<void>
   onSplitRight: () => void
   onSplitDown: () => void
@@ -44,6 +47,7 @@ type TerminalMenuState = {
 }
 
 export function useTerminalPaneContextMenu({
+  tabId,
   managerRef,
   paneTransportsRef,
   paneCwdRef,
@@ -99,6 +103,15 @@ export function useTerminalPaneContextMenu({
     // close, but xterm.js only accepts input when its own helper textarea is
     // focused. Without this, the user has to click the pane again before
     // typing works (see #592).
+    pane.terminal.focus()
+  }
+
+  const onCopyPaneId = async (): Promise<void> => {
+    const pane = resolveMenuPane()
+    if (!pane) {
+      return
+    }
+    await window.api.ui.writeClipboardText(makePaneKey(tabId, pane.leafId))
     pane.terminal.focus()
   }
 
@@ -264,6 +277,7 @@ export function useTerminalPaneContextMenu({
     menuPaneId,
     onContextMenuCapture,
     onCopy,
+    onCopyPaneId,
     onPaste,
     onSplitRight,
     onSplitDown,

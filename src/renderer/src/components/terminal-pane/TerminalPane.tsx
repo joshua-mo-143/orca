@@ -957,6 +957,7 @@ export default function TerminalPane({
   useTerminalFontZoom({ isActive, managerRef, paneFontSizesRef, settingsRef })
 
   useTerminalKeyboardShortcuts({
+    tabId,
     isActive,
     keyboardScopeRef: containerRef,
     managerRef,
@@ -1466,6 +1467,7 @@ export default function TerminalPane({
   }, [cancelPendingRenameFrames, renamingPaneId])
 
   const contextMenu = useTerminalPaneContextMenu({
+    tabId,
     managerRef,
     paneTransportsRef,
     paneCwdRef,
@@ -1670,6 +1672,7 @@ export default function TerminalPane({
           contextMenu.menuPaneId !== null && contextMenu.menuPaneId === expandedPaneId
         }
         onCopy={() => void contextMenu.onCopy()}
+        onCopyPaneId={() => void contextMenu.onCopyPaneId()}
         onPaste={() => void contextMenu.onPaste()}
         onSplitRight={contextMenu.onSplitRight}
         onSplitDown={contextMenu.onSplitDown}

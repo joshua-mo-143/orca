@@ -171,6 +171,25 @@ describe('keybindings', () => {
     ).toBe(true)
   })
 
+  it('keeps copy pane ID unassigned until users customize it', () => {
+    expect(getEffectiveKeybindingsForAction('terminal.copyPaneId', 'linux')).toEqual([])
+    expect(
+      keybindingMatchesAction(
+        'terminal.copyPaneId',
+        { key: 'p', code: 'KeyP', control: true, meta: false, alt: true, shift: false },
+        'linux'
+      )
+    ).toBe(false)
+    expect(
+      keybindingMatchesAction(
+        'terminal.copyPaneId',
+        { key: 'p', code: 'KeyP', control: true, meta: false, alt: true, shift: false },
+        'linux',
+        { 'terminal.copyPaneId': ['Ctrl+Alt+P'] }
+      )
+    ).toBe(true)
+  })
+
   it('reports customized renderer conflicts with native menu accelerators', () => {
     expect(findKeybindingConflicts('darwin')).toEqual([])
 

@@ -205,6 +205,25 @@ describe('resolveTerminalShortcutAction', () => {
     ).toEqual({ type: 'equalizePaneSizes' })
   })
 
+  it('resolves copy pane ID only when users assign it', () => {
+    expect(
+      resolveTerminalShortcutAction(
+        event({ key: 'p', code: 'KeyP', ctrlKey: true, altKey: true }),
+        false
+      )
+    ).toBeNull()
+    expect(
+      resolveTerminalShortcutAction(
+        event({ key: 'p', code: 'KeyP', ctrlKey: true, altKey: true }),
+        false,
+        'false',
+        0,
+        false,
+        { 'terminal.copyPaneId': ['Ctrl+Alt+P'] }
+      )
+    ).toEqual({ type: 'copyPaneId' })
+  })
+
   it('lets Ctrl+D pass through as EOF on non-Mac, requires Shift for split (#586)', () => {
     // Ctrl+D without Shift on Windows/Linux must NOT trigger split — it's EOF
     expect(

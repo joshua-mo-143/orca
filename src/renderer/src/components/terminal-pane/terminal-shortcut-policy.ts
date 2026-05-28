@@ -30,6 +30,7 @@ const PUNCTUATION_CODE_MAP: Record<string, string> = {
 
 export type TerminalShortcutAction =
   | { type: 'copySelection' }
+  | { type: 'copyPaneId' }
   | { type: 'toggleSearch' }
   | { type: 'clearActivePane' }
   | { type: 'focusPane'; direction: 'next' | 'previous' }
@@ -59,6 +60,10 @@ export function resolveTerminalShortcutAction(
 
     if (keybindingMatchesAction('terminal.clear', event, platform, keybindings)) {
       return { type: 'clearActivePane' }
+    }
+
+    if (keybindingMatchesAction('terminal.copyPaneId', event, platform, keybindings)) {
+      return { type: 'copyPaneId' }
     }
 
     if (keybindingMatchesAction('terminal.focusPreviousPane', event, platform, keybindings)) {

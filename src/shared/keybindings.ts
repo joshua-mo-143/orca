@@ -79,6 +79,7 @@ export type KeybindingActionId =
   | 'terminal.paste'
   | 'terminal.search'
   | 'terminal.clear'
+  | 'terminal.copyPaneId'
   | 'terminal.focusNextPane'
   | 'terminal.focusPreviousPane'
   | 'terminal.equalizePaneSizes'
@@ -639,6 +640,14 @@ export const KEYBINDING_DEFINITIONS: readonly KeybindingDefinition[] = [
     scope: 'terminal',
     searchKeywords: ['shortcut', 'pane', 'clear'],
     defaultBindings: platformBindings(['Mod+K'])
+  },
+  {
+    id: 'terminal.copyPaneId',
+    title: 'Copy pane ID',
+    group: 'Terminal Panes',
+    scope: 'terminal',
+    searchKeywords: ['shortcut', 'terminal', 'pane', 'copy', 'id', 'identifier', 'pane key'],
+    defaultBindings: platformBindings([])
   },
   {
     id: 'terminal.focusNextPane',

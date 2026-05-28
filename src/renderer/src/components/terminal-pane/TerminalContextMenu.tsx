@@ -2,6 +2,7 @@ import {
   Clipboard,
   Copy,
   Eraser,
+  Hash,
   Maximize2,
   Minimize2,
   PanelBottomClose,
@@ -37,6 +38,7 @@ type TerminalContextMenuProps = {
   canExpandPane: boolean
   menuPaneIsExpanded: boolean
   onCopy: () => void
+  onCopyPaneId: () => void
   onPaste: () => void
   onSplitRight: () => void
   onSplitDown: () => void
@@ -62,6 +64,7 @@ export default function TerminalContextMenu({
   canExpandPane,
   menuPaneIsExpanded,
   onCopy,
+  onCopyPaneId,
   onPaste,
   onSplitRight,
   onSplitDown,
@@ -78,6 +81,7 @@ export default function TerminalContextMenu({
   onSetTitle
 }: TerminalContextMenuProps): React.JSX.Element {
   const copyShortcut = useShortcutLabel('terminal.copySelection')
+  const copyPaneIdShortcut = useShortcutLabel('terminal.copyPaneId')
   const pasteShortcut = useShortcutLabel('terminal.paste')
   const splitRightShortcut = useShortcutLabel('terminal.splitRight')
   const splitDownShortcut = useShortcutLabel('terminal.splitDown')
@@ -85,6 +89,7 @@ export default function TerminalContextMenu({
   const expandShortcut = useShortcutLabel('terminal.expandPane')
   const closeShortcut = useShortcutLabel('terminal.closePane')
   const hasQuickCommands = repoQuickCommands.length > 0 || globalQuickCommands.length > 0
+  const showCopyPaneIdShortcut = copyPaneIdShortcut !== 'Unassigned'
   const showEqualizeShortcut = equalizeShortcut !== 'Unassigned'
 
   return (
@@ -135,6 +140,13 @@ export default function TerminalContextMenu({
           <Copy />
           Copy
           <DropdownMenuShortcut>{copyShortcut}</DropdownMenuShortcut>
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={onCopyPaneId}>
+          <Hash />
+          Copy Pane ID
+          {showCopyPaneIdShortcut ? (
+            <DropdownMenuShortcut>{copyPaneIdShortcut}</DropdownMenuShortcut>
+          ) : null}
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={onPaste}>
           <Clipboard />

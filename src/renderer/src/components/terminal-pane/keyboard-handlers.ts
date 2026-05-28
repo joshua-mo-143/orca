@@ -16,6 +16,7 @@ import { resolveSplitCwd, type PaneCwdMap } from './resolve-split-cwd'
 import { keyboardEventBelongsToScope } from './terminal-keyboard-scope'
 import { normalizeSelectedTextForFileSearch } from '@/lib/file-search-selection'
 import { splitWebRuntimeTerminal } from '@/runtime/web-runtime-session'
+import { makePaneKey } from '../../../../shared/stable-pane-id'
 
 function isEditableTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) {
@@ -91,6 +92,7 @@ export function matchFileSearchShortcut(
 }
 
 type KeyboardHandlersDeps = {
+  tabId: string
   isActive: boolean
   keyboardScopeRef: React.RefObject<HTMLElement | null>
   managerRef: React.RefObject<PaneManager | null>
@@ -115,6 +117,7 @@ type KeyboardHandlersDeps = {
 }
 
 export function useTerminalKeyboardShortcuts({
+  tabId,
   isActive,
   keyboardScopeRef,
   managerRef,
@@ -252,6 +255,19 @@ export function useTerminalKeyboardShortcuts({
         e.preventDefault()
         e.stopImmediatePropagation()
         void window.api.ui.writeClipboardText(selection).catch(() => {
+          /* ignore clipboard write failures */
+        })
+        return
+      }
+
+      if (action.type === 'copyPaneId') {
+        const pane = manager.getActivePane() ?? manager.getPanes()[0]
+        if (!pane) {
+          return
+        }
+        e.preventDefault()
+        e.stopImmediatePropagation()
+        void window.api.ui.writeClipboardText(makePaneKey(tabId, pane.leafId)).catch(() => {
           /* ignore clipboard write failures */
         })
         return
@@ -404,6 +420,7 @@ export function useTerminalKeyboardShortcuts({
     }
   }, [
     isActive,
+    tabId,
     keyboardScopeRef,
     managerRef,
     paneTransportsRef,
